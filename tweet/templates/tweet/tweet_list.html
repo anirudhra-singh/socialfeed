@@ -1,0 +1,40 @@
+{% extends "base/layout.html" %}
+
+{% block title %}
+  SocialFeed
+{% endblock %}
+
+{% block content %}
+
+<h1 class="text-center text-white mb-4"> Your Feed </h1>
+
+<a class="btn btn-primary mb-4" href="{% url 'tweet_create' %}">
+  create a tweet
+</a>
+
+<div class="container row gap-3">
+
+  {% for tweet in tweets %}
+  <div class="card" style="width: 18rem;">
+
+    {% if tweet.photo %}
+      <img src="{{ tweet.photo.url }}" class="card-img-top" alt="image">
+    {% else %}
+      <p class="text-center mt-2">No image</p>
+    {% endif %}
+
+    <div class="card-body">
+      <h5 class="card-title">{{ tweet.user.username }}</h5>
+      <p class="card-text">{{ tweet.text }}</p>
+    {% if tweet.user == user %}
+      <a href="{% url 'tweet_edit' tweet.id %}" class="btn btn-primary">Edit</a>
+      <a href="{% url 'tweet_delete' tweet.id %}" class="btn btn-danger">Delete</a>
+      {% endif %}
+    </div>
+
+  </div>
+  {% endfor %}
+
+</div>
+
+{% endblock %}

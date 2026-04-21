@@ -1,0 +1,22 @@
+{% extends "base/layout.html" %}
+
+{% block title %}
+  SocialFeed
+{% endblock  %}
+
+{% block content %}
+  <h1 class="text-center text-white mt-4 ">Are you sure that you want to delete the tweet </h1>
+
+
+<form method ="post">
+  {% csrf_token %}
+  <button class="btn btn-danger">Delete</button>
+</form>
+
+
+ <a href="{% url 'tweet_list' %}" class="btn btn-success mt-3">
+    Cancel
+  </a>
+{% endblock  %}
+
+ 
