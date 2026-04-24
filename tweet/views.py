@@ -9,7 +9,10 @@ def index(request):
 
 def tweet_list(request):
     tweets = Tweet.objects.all().order_by('-created_at')
-    return render(request, 'tweet/tweet_list.html', {'tweets': tweets})
+
+    for tweet in tweets:
+        tweet.is_liked = request.user in tweet.likes.all()
+        return render(request, 'tweet/tweet_list.html', {'tweets': tweets})
 
 @login_required
 def tweet_create(request):
