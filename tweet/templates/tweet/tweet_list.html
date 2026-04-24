@@ -6,34 +6,68 @@
 
 {% block content %}
 
-<h1 class="text-center text-white mb-4"> Your Feed </h1>
+<div class="container mt-4">
 
-<a class="btn btn-primary mb-4" href="{% url 'tweet_create' %}">
-  create a tweet
-</a>
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-white">Your Feed</h2>
 
-<div class="container row gap-3">
+    <a href="{% url 'tweet_create' %}" class="btn btn-primary">
+      + Create Tweet
+    </a>
+  </div>
 
-  {% for tweet in tweets %}
-  <div class="card" style="width: 18rem;">
+  <!-- Tweets Grid -->
+  <div class="row g-4">
 
-    {% if tweet.photo %}
-      <img src="{{ tweet.photo.url }}" class="card-img-top" alt="image">
-    {% else %}
-      <p class="text-center mt-2">No image</p>
-    {% endif %}
+    {% for tweet in tweets %}
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
 
-    <div class="card-body">
-      <h5 class="card-title">{{ tweet.user.username }}</h5>
-      <p class="card-text">{{ tweet.text }}</p>
-    {% if tweet.user == user %}
-      <a href="{% url 'tweet_edit' tweet.id %}" class="btn btn-primary">Edit</a>
-      <a href="{% url 'tweet_delete' tweet.id %}" class="btn btn-danger">Delete</a>
-      {% endif %}
+        <!-- Image -->
+        {% if tweet.photo %}
+          <img src="{{ tweet.photo.url }}" class="card-img-top" alt="tweet image">
+        {% endif %}
+
+        <!-- Body -->
+        <div class="card-body">
+          <h5 class="card-title">@{{ tweet.user.username }}</h5>
+          <p class="card-text">{{ tweet.text }}</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer d-flex justify-content-between align-items-center">
+
+          <!-- ❤️ Like Button -->
+          <form method="post" action="{% url 'like_tweet' tweet.id %}">
+            {% csrf_token %}
+
+            {% if user in tweet.likes.all %}
+              <button class="btn btn-sm btn-danger">
+                ❤️ {{ tweet.likes.count }}
+              </button>
+            {% else %}
+              <button class="btn btn-sm btn-outline-danger">
+                🤍 {% if user in tweet.likes.all %}
+              </button>
+            {% endif %}
+          </form>
+
+          <!-- Edit/Delete (only owner) -->
+          {% if tweet.user == user %}
+          <div>
+            <a href="{% url 'tweet_edit' tweet.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+            <a href="{% url 'tweet_delete' tweet.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </div>
+          {% endif %}
+
+        </div>
+
+      </div>
     </div>
+    {% endfor %}
 
   </div>
-  {% endfor %}
 
 </div>
 

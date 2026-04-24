@@ -65,4 +65,13 @@ def register(request):
       form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
 
+@login_required
+def like_tweet(request, tweet_id):
+    tweet = get_object_or_404(Tweet, id=tweet_id)
 
+    if request.user in tweet.likes.all():
+        tweet.likes.remove(request.user)   
+    else:
+        tweet.likes.add(request.user)      
+
+    return redirect('tweet_list')
