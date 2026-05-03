@@ -39,20 +39,23 @@
         <div class="card-footer d-flex justify-content-between align-items-center">
 
           <!--  Like Button -->
-          <form method="post" action="{% url 'like_tweet' tweet.id %}">
+          <!-- <form method="post" action="{% url 'like_tweet' tweet.id %}"> -->
             {% csrf_token %}
             {% if tweet.is_liked %}
-            <button class="btn btn-sm btn-danger">
-              ❤️ {{ tweet.likes.count }}
-            </button>
-            {% else %}
-            <button class="btn btn-sm btn-outline-danger">
-              🤍 {{ tweet.likes.count }}
-            </button>
+           <!-- Like Button -->
+           <button 
+              class="btn btn-sm like-btn {% if tweet.is_liked %}btn-danger{% else %}btn-outline-danger{% endif %}"
+               data-id="{{ tweet.id }}"
+>
+             <span class="like-icon">
+                {% if tweet.is_liked %}❤️{% else %}🤍{% endif %}
+             </span>
+            <span class="like-count">{{ tweet.likes.count }}</span>
+          </button>
             {% endif %}
 
             
-          </form>
+          <!-- </form> -->
 
          
           {% if tweet.user == user %}

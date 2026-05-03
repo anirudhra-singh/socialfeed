@@ -14,6 +14,8 @@
     </title>
 
 </head>
+
+
 <body style="background-color:#121212;">
    <nav class="navbar navbar-dark bg-dark px-4">
   <div class="container-fluid">
@@ -54,8 +56,56 @@
    <div class="container">
     {% block content %}
       
-    {% endblock %}
+    {% endblock %} 
+    </div>
 
-    
+
+<!-- ✅ SCRIPT MUST BE HERE -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  document.querySelectorAll('.like-btn').forEach(button => {
+
+    button.addEventListener('click', function () {
+
+      const tweetId = this.dataset.id;
+      const btn = this;
+
+      fetch(`/tweet/${tweetId}/like/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCSRFToken(),
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+
+        // update count
+        btn.querySelector('.like-count').innerText = data.count;
+
+        // toggle color
+        if (data.liked) {
+          btn.classList.remove('btn-outline-danger');
+          btn.classList.add('btn-danger');
+        } else {
+          btn.classList.remove('btn-danger');
+          btn.classList.add('btn-outline-danger');
+        }
+
+      });
+
+    });
+
+  });
+
+});
+
+// CSRF
+function getCSRFToken() {
+  return document.cookie.split('; ')
+    .find(row => row.startsWith('csrftoken='))
+    .split('=')[1];
+}
+</script>
 </body>
 </html>

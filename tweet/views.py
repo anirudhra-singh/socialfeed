@@ -3,6 +3,7 @@ from .models import Tweet
 from .forms import TweetForm, UserRegistrationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
+from django.http import JsonResponse
 
 def index(request):
     return render(request, 'index.html')
@@ -73,8 +74,13 @@ def like_tweet(request, tweet_id):
     tweet = get_object_or_404(Tweet, id=tweet_id)
 
     if request.user in tweet.likes.all():
-        tweet.likes.remove(request.user)   
+        tweet.likes.remove(request.user)
+        liked = False
     else:
-        tweet.likes.add(request.user)      
+        tweet.likes.add(request.user)
+        liked = True
 
-    return redirect('tweet_list')
+    return JsonResponse({
+        'liked': liked,
+        'count': tweet.likes.count()
+    })
