@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Tweet
-from .forms import TweetForm, UserRegistrationForm
+from .models import Tweet, Comment
+from .forms import TweetForm, UserRegistrationForm , CommentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.http import JsonResponse
@@ -84,3 +84,19 @@ def like_tweet(request, tweet_id):
         'liked': liked,
         'count': tweet.likes.count()
     })
+
+@login_required
+def add_comment(request, tweet_id):
+    tweet = get_object_or_404(Tweet, id=tweet_id)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.tweet = tweet
+            comment.save()
+
+    return redirect('tweet_list')
+

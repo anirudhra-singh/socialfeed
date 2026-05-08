@@ -72,6 +72,48 @@
 
           </button>
 
+
+          <!-- comment section -->
+           <div class="px-3 pb-3">
+            
+            <!-- existing comments -->
+             <div class="mb-2">
+              {% for comment in tweet.comments.all %}
+               <div class="bg-dark text-light p-2 rounded mb-2">
+                
+                <strong>@{{ comment.user.username }}</strong><br>
+                {{ comment.text }}
+              </div>
+              {% empty %}
+
+              <small class="text-muted">No comments yet</small>
+              {% endfor %}
+             </div>
+             
+             
+             <!-- add comment form -->
+              {% if user.is_authenticated %}
+              <form method="post" action="{% url 'add_comment' tweet.id %}">
+                {% csrf_token %}
+                
+                <div class="d-flex gap-2">
+                  
+                  <input 
+                  type="text"
+                  name="text"
+                  class="form-control"
+                  placeholder="Write a comment..."
+                  required
+                  >
+                  <button class="btn btn-primary btn-sm">
+                    Post
+                  </button>
+                
+                </div>
+              </form>
+              {% endif %}
+            </div>
+
           <!-- edit/delete buttons -->
           {% if tweet.user == user %}
           <div>
