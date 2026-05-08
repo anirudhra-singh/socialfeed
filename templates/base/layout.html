@@ -19,6 +19,7 @@
 <body style="background-color:#121212;">
    <nav class="navbar navbar-dark bg-dark px-4">
   <div class="container-fluid">
+
     <!-- left side navbar -->
     <a class="navbar-brand fw-bold" href="{% url 'tweet_list' %}">
       Socialfeed
@@ -60,7 +61,7 @@
     </div>
 
 
-<!-- ✅ SCRIPT MUST BE HERE -->
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-// CSRF
+
 function getCSRFToken() {
   return document.cookie.split('; ')
     .find(row => row.startsWith('csrftoken='))
