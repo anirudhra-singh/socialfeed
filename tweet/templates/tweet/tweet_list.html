@@ -79,17 +79,39 @@
             <!-- existing comments -->
              <div class="mb-2">
               {% for comment in tweet.comments.all %}
-               <div class="bg-dark text-light p-2 rounded mb-2">
-                
+               <div class="d-flex justify-content-between align-items-center">
+
+                <div>
                 <strong>@{{ comment.user.username }}</strong><br>
                 {{ comment.text }}
-              </div>
-              {% empty %}
+                </div>
 
-              <small class="text-muted">No comments yet</small>
-              {% endfor %}
-             </div>
-             
+               <!-- Delete Comment -->
+                {% if comment.user == user %}
+                <form
+                method="post"
+                action="{% url 'delete_comment' comment.id %}"
+                style="display:inline;"
+                method="post"
+                >
+                {% csrf_token %}
+                
+                <button
+                type="submit"
+                class="btn btn-sm btn-outline-danger"
+                title="Delete Comment"
+                >
+                🗑️
+              </button>
+            </form>
+            {% endif %}
+          </div>
+          
+          {% empty %}
+          <small class="text-muted">No comments yet</small>
+          {% endfor %}
+        
+        </div>
              
              <!-- add comment form -->
               {% if user.is_authenticated %}
