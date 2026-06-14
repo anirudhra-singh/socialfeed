@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Tweet, Comment
+from .models import Tweet, Comment, Notification
 from .forms import TweetForm, UserRegistrationForm , CommentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
@@ -79,6 +79,11 @@ def like_tweet(request, tweet_id):
     else:
         tweet.likes.add(request.user)
         liked = True
+        Notification.objects.create(
+            receiver=tweet.user,
+            sender=request.user,
+            tweet=tweet,
+            notification_type='like')
 
     return JsonResponse({
         'liked': liked,
@@ -97,6 +102,12 @@ def add_comment(request, tweet_id):
             comment.user = request.user
             comment.tweet = tweet
             comment.save()
+            Notification.objects.create(
+                receiver=tweet.user,
+                sender=request.user,
+                tweet=tweet,
+                notification_type='comment'
+               )
 
     return redirect('tweet_list')
 
@@ -112,3 +123,19 @@ def delete_comment(request, comment_id):
         comment.delete()
 
     return redirect('tweet_list')
+
+
+@login_required
+def notifications(request):
+
+    notifications = request.user.notifications.order_by(
+        '-created_at'
+    )
+
+    return render(
+        request,
+        'tweet/notifications.html',
+        {
+            'notifications': notifications
+        }
+    )

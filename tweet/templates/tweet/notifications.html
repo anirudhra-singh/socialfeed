@@ -1,0 +1,33 @@
+{% extends "base/layout.html" %}
+
+{% block content %}
+
+<h2>Notifications</h2>
+
+{% for notification in notifications %}
+
+<div class="card mb-2 p-3">
+
+{% if notification.notification_type == 'like' %}
+<strong>
+{{ notification.sender.username }}
+liked your tweet ❤️
+</strong>
+{% endif %}
+
+{% if notification.notification_type == 'comment' %}
+<strong>
+{{ notification.sender.username }}
+commented on your tweet 💬
+</strong>
+{% endif %}
+
+</div>
+
+{% empty %}
+
+<p>No notifications yet.</p>
+
+{% endfor %}
+
+{% endblock %}
