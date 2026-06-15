@@ -108,8 +108,11 @@ def add_comment(request, tweet_id):
                 tweet=tweet,
                 notification_type='comment'
                )
-
-    return redirect('tweet_list')
+            return JsonResponse({
+              'id': comment.id,
+              'username': comment.user.username,
+              'text': comment.text,
+             })
 
 @login_required
 def delete_comment(request, comment_id):
@@ -121,8 +124,9 @@ def delete_comment(request, comment_id):
 
     if request.method == "POST":
         comment.delete()
-
-    return redirect('tweet_list')
+        return JsonResponse({
+         'success': True
+          })
 
 
 @login_required
