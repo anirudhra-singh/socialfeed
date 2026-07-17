@@ -38,7 +38,13 @@
         <div class="card-body">
 
           <h5 class="card-title">
-            @{{ tweet.user.username }}
+            <a
+              href="{% url 'profile' tweet.user.username %}"
+              class="text-decoration-none"
+              >
+                @{{ tweet.user.username }}
+           </a>
+
           </h5>
 
           <p class="card-text">

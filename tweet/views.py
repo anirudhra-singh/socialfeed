@@ -4,6 +4,7 @@ from .forms import TweetForm, UserRegistrationForm , CommentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.http import JsonResponse
+from django.contrib.auth.models import User
 
 def index(request):
     return render(request, 'index.html')
@@ -142,4 +143,23 @@ def notifications(request):
         {
             'notifications': notifications
         }
+    )
+
+def profile(request, username):
+
+    profile_user = User.objects.get(
+        username=username
+    )
+
+    tweets = profile_user.tweet_set.order_by(
+        "-created_at"
+    )
+
+    return render(
+        request,
+        "tweet/profile.html",
+        {
+            "profile_user": profile_user,
+            "tweets": tweets,
+        },
     )

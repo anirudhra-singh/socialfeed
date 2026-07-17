@@ -1,0 +1,76 @@
+{% extends "base/layout.html" %}
+
+{% block title %}
+{{ profile_user.username }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card p-4 mb-4">
+
+        <div class="text-center">
+
+            <img
+                src="{{ profile_user.profile.profile_picture.url }}"
+                width="150"
+                height="150"
+                class="rounded-circle mb-3"
+            >
+
+            <h2>@{{ profile_user.username }}</h2>
+
+            <p>
+                {{ profile_user.profile.bio }}
+            </p>
+
+            <p>
+                📍 {{ profile_user.profile.location }}
+            </p>
+
+            <p>
+                🌐 {{ profile_user.profile.website }}
+            </p>
+
+            <hr>
+
+            <h5>
+                Tweets:
+                {{ tweets.count }}
+            </h5>
+
+        </div>
+
+    </div>
+
+    <h3>Your Tweets</h3>
+
+    {% for tweet in tweets %}
+
+    <div class="card mb-3">
+
+        {% if tweet.photo %}
+        <img
+            src="{{ tweet.photo.url }}"
+            class="card-img-top"
+        >
+        {% endif %}
+
+        <div class="card-body">
+
+            {{ tweet.text }}
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <p>No tweets yet.</p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -17,4 +17,10 @@ urlpatterns = [
     views.notifications,
     name='notifications'
 ),
+
+path(
+    "profile/<str:username>/",
+    views.profile,
+    name="profile",
+),
 ]
