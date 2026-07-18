@@ -60,6 +60,7 @@ class Notification(models.Model):
         return f"{self.sender} -> {self.receiver}"
 
 #profile
+
 class Profile(models.Model):
     user = models.OneToOneField(
         User,

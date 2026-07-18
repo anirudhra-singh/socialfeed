@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.http import JsonResponse
 from django.contrib.auth.models import User
+from .forms import ProfileForm
+
 
 def index(request):
     return render(request, 'index.html')
@@ -144,7 +146,7 @@ def notifications(request):
             'notifications': notifications
         }
     )
-
+@login_required
 def profile(request, username):
 
     profile_user = User.objects.get(
@@ -162,4 +164,32 @@ def profile(request, username):
             "profile_user": profile_user,
             "tweets": tweets,
         },
+    )
+
+#edit profile
+@login_required
+def edit_profile(request):
+
+    profile = request.user.profile
+
+    if request.method == "POST":
+
+        form = ProfileForm(
+            request.POST,
+            request.FILES,
+            instance=profile
+        )
+
+        if form.is_valid():
+            form.save()
+            return redirect("profile", username=request.user.username)
+
+    else:
+
+        form = ProfileForm(instance=profile)
+
+    return render(
+        request,
+        "tweet/edit_profile.html",
+        {"form": form}
     )

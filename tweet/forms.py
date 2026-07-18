@@ -2,6 +2,7 @@ from django import forms
 from .models import Tweet , Comment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Profile
 
 class TweetForm(forms.ModelForm):
     class  Meta:
@@ -25,3 +26,15 @@ class CommentForm(forms.ModelForm):
                 'placeholder': 'Write a comment...'
             })
         }
+
+# edit profile
+class ProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = Profile
+        fields = [
+            "profile_picture",
+            "bio",
+            "location",
+            "website",
+        ]
