@@ -27,5 +27,10 @@ path(
     views.profile,
     name="profile",
 ),
+path(
+    "follow/<str:username>/",
+    views.follow_user,
+    name="follow_user",
+),
 
 ]

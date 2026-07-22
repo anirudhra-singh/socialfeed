@@ -38,7 +38,41 @@
             <p>
                 🌐 {{ profile_user.profile.website }}
             </p>
+            <p>
+            Followers :
+                {{ profile.followers.count }}
+                </p>
 
+             <p>
+               Following :
+               {{ profile.user.following.count }}
+              </p>
+              {% if request.user != profile.user %}
+
+               <form
+              method="post"
+             action="{% url 'follow_user' profile.user.username %}"
+                    >
+
+               {% csrf_token %}
+
+              {% if request.user in profile.followers.all %}
+
+                 <button class="btn btn-danger">
+                 Unfollow
+             </button>
+
+    {% else %}
+
+        <button class="btn btn-primary">
+            Follow
+        </button>
+
+    {% endif %}
+
+</form>
+
+{% endif %}
             <hr>
 
             <h5>

@@ -193,3 +193,19 @@ def edit_profile(request):
         "tweet/edit_profile.html",
         {"form": form}
     )
+
+@login_required
+def follow_user(request, username):
+
+    user = get_object_or_404(User, username=username)
+
+    if user != request.user:
+
+        profile = user.profile
+
+        if request.user in profile.followers.all():
+            profile.followers.remove(request.user)
+        else:
+            profile.followers.add(request.user)
+
+    return redirect("profile", username=username)
