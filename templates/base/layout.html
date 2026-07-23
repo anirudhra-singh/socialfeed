@@ -12,106 +12,178 @@
              SocialFeed
            {% endblock  %} 
     </title>
+<style>
 
+.nav-link{
+    transition:.25s;
+}
+
+.nav-link:hover{
+    background:#0d6efd;
+    color:white !important;
+    padding-left:18px;
+}
+
+</style>
 </head>
 
 
 <body style="background-color:#121212;">
-   <nav class="navbar navbar-dark bg-dark px-4">
-  <div class="container-fluid">
 
-    <!-- left side navbar -->
-    <a class="navbar-brand fw-bold" href="{% url 'tweet_list' %}">
-      Socialfeed
-    </a>
+<div class="d-flex">
 
-     <!-- Right side -->
-  <div class="d-flex align-items-center">
-     {% if user.is_authenticated %}
-     <a href="{% url 'tweet_list' %}" class="btn btn-primary btn-sm me-2">
-        Home </a>
-        <a href="{% url 'tweet_create' %}" class="btn btn-success btn-sm me-2">
-        Create
-      </a>
-      
-      <a href="{% url 'notifications' %}"
-      class="btn btn-warning btn-sm me-2">
-      🔔 Notifications
-    </a>
+    <!-- sidebar-->
+    <div
+         class="bg-dark text-white p-4 d-flex flex-column position-fixed"
+    style="
+        width:260px;
+        height:100vh;
+        overflow-y:auto;
+    "
+    >
 
-      <form method = "post" action="{% url 'logout'%}" style="display:inline;">
-        {%csrf_token%}
-        <button class ="btn btn-danger btn-sm"
-        type ="submit" > Logout </button>
-      
-      </form>
-    
-     {% else %}
+        <!-- logo -->
+        <h2 class="fw-bold text-center mb-4">
+            SocialFeed
+        </h2>
 
-      <a href="{% url 'register'%}" class=" btn btn-info btn-sm me-2 " > 
-        Register
-      </a>
+        <!-- profile -->
+        <div class="text-center mb-4">
 
-      <a href="{% url 'login'%}" class=" btn btn-warning btn-sm me-2 " >
-        Login</a>
+            {% if user.is_authenticated %}
 
-      {% endif %}
-    
-  </div>
-</nav>
-   <div class="container">
-    {% block content %}
-      
-    {% endblock %} 
+                {% if user.profile.profile_picture %}
+                    <img
+                        src="{{ user.profile.profile_picture.url }}"
+                        class="rounded-circle mb-3"
+                        width="120"
+                        height="120"
+                        style="object-fit:cover;"
+                    >
+                {% else %}
+                    <img
+                        src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                        class="rounded-circle mb-3"
+                        width="120"
+                        height="120"
+                    >
+                {% endif %}
+
+                <h5>@{{ user.username }}</h5>
+
+            {% endif %}
+
+        </div>
+
+        <hr>
+
+        <!-- navigation -->
+<ul class="nav flex-column fs-5">
+
+    <li class="nav-item mb-2">
+        <a href="{% url 'tweet_list' %}"
+           class="nav-link text-white rounded px-3 py-2">
+            🏠 Home
+        </a>
+    </li>
+
+    {% if user.is_authenticated %}
+
+        <li class="nav-item mb-2">
+            <a href="{% url 'profile' user.username %}"
+               class="nav-link text-white rounded px-3 py-2">
+                👤 Profile
+            </a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a href="{% url 'tweet_create' %}"
+               class="nav-link text-white rounded px-3 py-2">
+                ➕ Create Tweet
+            </a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a href="{% url 'notifications' %}"
+               class="nav-link text-white rounded px-3 py-2">
+                🔔 Notifications
+            </a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a href="#"
+               class="nav-link text-white rounded px-3 py-2">
+                👥 Friends
+            </a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a href="#"
+               class="nav-link text-white rounded px-3 py-2">
+                ⚙ Settings
+            </a>
+        </li>
+
+    {% else %}
+
+        <li class="nav-item mb-2">
+            <a href="{% url 'login' %}"
+               class="nav-link text-white rounded px-3 py-2">
+                🔑 Login
+            </a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a href="{% url 'register' %}"
+               class="nav-link text-white rounded px-3 py-2">
+                📝 Register
+            </a>
+        </li>
+
+    {% endif %}
+
+</ul>
+        <!--  logout-->
+        <div class="mt-auto">
+
+            <hr>
+
+           {% if user.is_authenticated %}
+
+<form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button class="btn btn-danger w-100" type="submit">
+        🚪 Logout
+    </button>
+</form>
+
+{% else %}
+
+<p class="text-center text-secondary">
+    Welcome to SocialFeed
+</p>
+
+{% endif %}
+
+        </div>
+
     </div>
 
+    <!--main content  -->
+    <div class="flex-grow-1"
+    style="margin-left:260px;">
+
+        <div class="container-fluid py-4">
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+
+    </div>
+
+</div>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
 
-  document.querySelectorAll('.like-btn').forEach(button => {
-
-    button.addEventListener('click', function () {
-
-      const tweetId = this.dataset.id;
-      const btn = this;
-
-      fetch(`/tweet/${tweetId}/like/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCSRFToken(),
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-
-        // update count
-        btn.querySelector('.like-count').innerText = data.count;
-
-        // toggle color
-        if (data.liked) {
-          btn.classList.remove('btn-outline-danger');
-          btn.classList.add('btn-danger');
-        } else {
-          btn.classList.remove('btn-danger');
-          btn.classList.add('btn-outline-danger');
-        }
-
-      });
-
-    });
-
-  });
-
-});
-
-
-function getCSRFToken() {
-  return document.cookie.split('; ')
-    .find(row => row.startsWith('csrftoken='))
-    .split('=')[1];
-}
-</script>
 </body>
-</html>
